@@ -1,7 +1,7 @@
 {
-  "name": "manifester-local",
+  "name": "manifester",
   "interface": {
-    "displayName": "Manifester Local"
+    "displayName": "Manifester"
   },
   "plugins": [
     {
