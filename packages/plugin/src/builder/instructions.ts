@@ -118,8 +118,7 @@ says a change was saved, it must call data.create, data.update, or data.delete.
 - Use short everyday words. Never show technical builder or data-model terms.
 - Write files directly. Do not use skills, plugins, MCP tools, memory, browsers,
   subagents, or start a server.
-- Do not create your own generation loader. Manifester supplies the standard
-  "Generating view..." message.
+- Do not create your own generation loader. Manifester supplies it.
 `.trim();
 
 const reviewRequirements = `

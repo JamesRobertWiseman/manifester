@@ -30,6 +30,17 @@ export const bridgeCss = `
 #manifester-generation button { display: inline-block !important; font: inherit !important; }
 #manifester-generation button + button { margin-inline-start: 8px; }
 #manifester-generation a { display: block !important; margin-block-start: 12px; color: inherit !important; }
+.manifester-loading-dots { display: inline-flex; gap: 0.08em; margin-inline-start: 0.08em; }
+.manifester-loading-dot { display: inline-block; animation: manifester-loading-dot 1.2s ease-in-out infinite; opacity: 0.25; }
+.manifester-loading-dot:nth-child(2) { animation-delay: 0.15s; }
+.manifester-loading-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes manifester-loading-dot {
+  0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-0.12em); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .manifester-loading-dot { animation: none; opacity: 1; }
+}
 `.trim();
 
 export const bridgeJavaScript = String.raw`
@@ -72,7 +83,7 @@ export const bridgeJavaScript = String.raw`
     document.getElementById("manifester-generation")?.remove();
   }
 
-  function overlay() {
+  function overlay(messageText = "The next move is taking shape...") {
     removeOverlay();
     const element = document.createElement("div");
     element.id = "manifester-generation";
@@ -80,12 +91,22 @@ export const bridgeJavaScript = String.raw`
     element.setAttribute("aria-live", "polite");
     const content = document.createElement("div");
     const message = document.createElement("p");
-    message.textContent = "Generating view...";
+    const dots = document.createElement("span");
+    dots.className = "manifester-loading-dots";
+    dots.setAttribute("aria-hidden", "true");
+    dots.append(...Array.from({ length: 3 }, () => {
+      const dot = document.createElement("span");
+      dot.className = "manifester-loading-dot";
+      dot.textContent = ".";
+      return dot;
+    }));
+    message.textContent = messageText.replace(/\.\.\.$/, "");
+    message.append(dots);
     const manager = document.createElement("a");
     manager.href = "${MANAGER_ADDRESS}";
     manager.target = "_blank";
     manager.rel = "noopener";
-    manager.textContent = "View progress in Manifester";
+    manager.textContent = "Watch the magic in Manifester";
     content.append(message, manager);
     element.append(content);
     document.body.append(element);
@@ -151,7 +172,7 @@ export const bridgeJavaScript = String.raw`
 
   async function generateRoute(path) {
     if (active) return active;
-    overlay();
+    overlay("The next scene is taking shape...");
     setDisabled(true);
     active = (async () => {
       try {

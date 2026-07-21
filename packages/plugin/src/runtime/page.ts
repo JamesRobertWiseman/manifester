@@ -20,11 +20,13 @@ export function routeGenerationPage(path: string): string {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="manifester-route" content="${state}">
-    <title>Generating view</title>
+    <title>The next scene is taking shape</title>
     <link rel="stylesheet" href="/__manifester/bridge.css">
   </head>
   <body>
-    <main id="manifester-generation" role="status" aria-live="polite">Generating view...</main>
+    <main id="manifester-generation" role="status" aria-live="polite" aria-label="The next scene is taking shape...">
+      The next scene is taking shape<span class="manifester-loading-dots" aria-hidden="true"><span class="manifester-loading-dot">.</span><span class="manifester-loading-dot">.</span><span class="manifester-loading-dot">.</span></span>
+    </main>
     <script src="/__manifester/bridge.js" defer></script>
   </body>
 </html>`;

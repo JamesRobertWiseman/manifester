@@ -8,12 +8,12 @@ const progressHtml = `<!doctype html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Building your application</title>
+    <title>Project signals are coming in</title>
     <link rel="stylesheet" href="/__manifester/progress.css">
   </head>
   <body>
     <main>
-      <p id="build-status" role="status" aria-live="polite">Assessing your project</p>
+      <p id="build-status" role="status" aria-live="polite">Project signals are coming in...</p>
     </main>
     <script src="/__manifester/progress.js" defer></script>
   </body>
@@ -53,7 +53,7 @@ setTimeout(refresh, 250);
 
 export async function createBuildProgressRuntime(port: number) {
   let status: BuildProgressStatus = "generating";
-  let message = "Assessing your project";
+  let message = "Project signals are coming in...";
   const server = Fastify({ logger: false });
   server.addHook("onSend", async (_request, reply) => {
     reply.header("content-security-policy", "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
