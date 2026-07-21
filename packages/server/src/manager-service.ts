@@ -1,5 +1,6 @@
 import { ApplicationService, appRoot, loadAppRegistry, loadState, resolveProject } from "@manifester/plugin";
 import type { ApplicationSnapshot } from "@manifester/plugin";
+import { localAddress } from "@manifester/plugin/local-address";
 import type { ManagedApplication, ManagedProject, ManagerActivity } from "./contracts.ts";
 import { ManagerActivityStore } from "./activity-store.ts";
 import { ManagerConflictError, ManagerNotFoundError, ManagerRequestError } from "./errors.ts";
@@ -192,7 +193,7 @@ export class ManagerService {
     const project = await canonicalProject(projectInput);
     await this.#applications.close(project);
     const removed = await this.#registry.remove(project);
-    if (removed) this.#record(projectId(project), "Application removed from manager");
+    if (removed) this.#record(projectId(project), "Application removed from Dashboard");
     return { removed };
   }
 
@@ -200,7 +201,7 @@ export class ManagerService {
     const project = await this.#requireIdle(id);
     await this.#applications.close(project.project);
     const removed = await this.#registry.remove(project.project);
-    this.#record(id, "Application removed from manager; local app and data kept");
+    this.#record(id, "Application removed from Dashboard; local app and data kept");
     return { removed, dataKept: true };
   }
 
@@ -260,7 +261,7 @@ export class ManagerService {
   }
 
   async #generationSnapshot(port: number): Promise<ApplicationSnapshot> {
-    const address = `http://127.0.0.1:${port}`;
+    const address = localAddress(port);
     try {
       const response = await fetch(`${address}/__manifester/progress`, {
         cache: "no-store",

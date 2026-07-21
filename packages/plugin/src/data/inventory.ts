@@ -3,6 +3,7 @@ import { createReadStream } from "node:fs";
 import { readFile, readdir, realpath, stat } from "node:fs/promises";
 import { extname, join, relative, sep } from "node:path";
 import type { ProjectFile } from "../contracts.ts";
+import { DOCUMENT_EXTENSIONS } from "./documents.ts";
 import { DATASET_EXTENSIONS } from "./loaders.ts";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -81,7 +82,9 @@ function isText(contents: Buffer): boolean {
 }
 
 function classify(path: string, contents: Buffer): Pick<ProjectFile, "kind" | "note"> {
-  if (DATASET_EXTENSIONS.has(extname(path).toLowerCase())) return { kind: "dataset" };
+  const extension = extname(path).toLowerCase();
+  if (DATASET_EXTENSIONS.has(extension)) return { kind: "dataset" };
+  if (DOCUMENT_EXTENSIONS.has(extension)) return { kind: "document" };
   if (isText(contents)) return { kind: "context" };
   return { kind: "unsupported", note: "This file format is not supported." };
 }

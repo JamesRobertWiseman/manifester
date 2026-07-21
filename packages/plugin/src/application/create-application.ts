@@ -1,6 +1,7 @@
 import { buildInitialApplication } from "../builder/builder.ts";
 import type { ProjectCatalog } from "../contracts.ts";
 import { inspectProject } from "../data/catalog.ts";
+import { prepareDocumentContext } from "../discovery/document-context.ts";
 import { DiscoverySession } from "../discovery/discover.ts";
 import type { BuildProgress } from "../runtime/progress.ts";
 import { saveCatalog, saveDiscovery, saveState } from "../state/project-state.ts";
@@ -23,10 +24,14 @@ export async function createApplication(options: CreateApplicationOptions): Prom
   };
   update("Assessing your project");
   const catalog = await inspectProject(project);
+  const documentPaths = await prepareDocumentContext(project, catalog);
   report(project, `Assessing codebase: ${catalog.files.length} project ${catalog.files.length === 1 ? "file" : "files"}`);
-  report(project, `Data assessment: ${catalog.resources.map(({ name, rowCount, fields }) => `${name} (${rowCount} rows, ${fields.length} fields)`).join("; ")}`);
+  report(project, `Content assessment: ${catalog.resources.map(({ name, rowCount, fields }) => `${name} (${rowCount} entries, ${fields.length} fields)`).join("; ")}`);
+  if (documentPaths.length > 0) {
+    report(project, `Document extraction: ${documentPaths.length} ${documentPaths.length === 1 ? "document" : "documents"} ready`);
+  }
   update("Discovering data structure and relationships");
-  const discoverySession = new DiscoverySession(catalog);
+  const discoverySession = new DiscoverySession(catalog, documentPaths);
   let discovery = await discoverySession.run();
   report(project, `Assessment result: ${discovery.domain}; ${discovery.purpose}`);
   report(project, `User and job: ${discovery.primaryUser}; ${discovery.job}`);

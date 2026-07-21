@@ -14,7 +14,7 @@ export async function registerDashboard(server: FastifyInstance): Promise<void> 
     const missingApi = request.url === "/api" || request.url.startsWith("/api?") || request.url.startsWith("/api/");
     if (missingApi || request.url.startsWith("/assets/")) {
       return reply.code(404).send({
-        message: missingApi ? "This manager endpoint does not exist." : "This dashboard asset does not exist.",
+        message: missingApi ? "This Dashboard endpoint does not exist." : "This Dashboard asset does not exist.",
       });
     }
     return reply.type("text/html; charset=utf-8").sendFile("index.html");

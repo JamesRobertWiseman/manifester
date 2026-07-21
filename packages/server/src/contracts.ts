@@ -1,8 +1,8 @@
 import type { ApplicationStatus } from "@manifester/plugin";
+import { LOCAL_HOST, MANAGER_ADDRESS, MANAGER_PORT } from "@manifester/plugin/local-address";
 
-export const MANAGER_HOST = "127.0.0.1";
-export const MANAGER_PORT = 4_316;
-export const MANAGER_ADDRESS = `http://${MANAGER_HOST}:${MANAGER_PORT}`;
+export const MANAGER_HOST = LOCAL_HOST;
+export { MANAGER_ADDRESS, MANAGER_PORT };
 export const MANAGER_SERVICE = "manifester-manager";
 
 export type DesiredStatus = "running" | "stopped";

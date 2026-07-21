@@ -1,4 +1,4 @@
-type FileKind = "dataset" | "context" | "unsupported";
+type FileKind = "dataset" | "document" | "context" | "unsupported";
 
 export interface ProjectFile {
   path: string;
@@ -17,6 +17,7 @@ export interface DataField {
 
 export interface DataResource {
   id: string;
+  kind: "dataset" | "document";
   name: string;
   sourcePath: string;
   tableName: string;

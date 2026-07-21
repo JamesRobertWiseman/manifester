@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import { LOCAL_HOST, localAddress } from "./local-address.ts";
 
 type BuildProgressStatus = "generating" | "failed";
 
@@ -66,7 +67,7 @@ export async function createBuildProgressRuntime(port: number) {
     reply.type("text/javascript; charset=utf-8").send(progressJavaScript));
   server.get("/*", async (_request, reply) =>
     reply.type("text/html; charset=utf-8").send(progressHtml));
-  await server.listen({ host: "127.0.0.1", port });
+  await server.listen({ host: LOCAL_HOST, port });
   const address = server.server.address();
   if (!address || typeof address === "string") {
     await server.close();
@@ -74,7 +75,7 @@ export async function createBuildProgressRuntime(port: number) {
   }
   return {
     server,
-    address: `http://127.0.0.1:${address.port}`,
+    address: localAddress(address.port),
     port: address.port,
     snapshot: () => ({ status, message }),
     update(next: string) {

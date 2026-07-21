@@ -106,6 +106,10 @@ says a change was saved, it must call data.create, data.update, or data.delete.
   Keep every supplied resource and its records accessible from the home
   experience. A useful exception or insight may be prominent, but one record or
   value must not become the entire application.
+- Follow discovery's evidence-backed role for document-derived content. It may
+  provide records, context, domain instructions, reference material, workflow
+  evidence, or a combination. Use the complete resource rather than assuming
+  that every document is only a file to read.
 - Do not default to a generic dashboard, admin template, or file viewer.
 - Use no external packages, fonts, images, CDNs, or network calls.
 - Put all JavaScript in page.js and all styling in page.css. Do not use inline

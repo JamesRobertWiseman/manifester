@@ -2,6 +2,7 @@ import type { JsonObject, JsonValue } from "./json.ts";
 
 export interface RawResource {
   sourcePath: string;
+  kind: "dataset" | "document";
   name: string;
   tableName: string;
   fieldNames: string[];

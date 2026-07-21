@@ -65,7 +65,7 @@ async function waitForManager(running: boolean): Promise<void> {
     if (Boolean(await managerHealth()) === running) return;
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
-  throw new Error(`The Manifester manager could not be ${running ? "started" : "stopped"}.`);
+  throw new Error(`The Manifester Dashboard could not be ${running ? "started" : "stopped"}.`);
 }
 
 export async function stopManagerProcess(codexOwnedOnly = false): Promise<boolean> {
@@ -99,7 +99,7 @@ export async function startManagerProcess(codexOwned = false): Promise<ManagerHe
   closeSync(log);
   await waitForManager(true);
   const started = await managerHealth();
-  if (!started) throw new Error("The Manifester manager could not be started.");
+  if (!started) throw new Error("The Manifester Dashboard could not be started.");
   return started;
 }
 

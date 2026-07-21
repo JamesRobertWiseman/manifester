@@ -9,9 +9,9 @@ const portInput = z.number().int().min(0).max(65_535).default(0);
 
 export function registerApplicationTools(server: McpServer, applications: ApplicationService, manager: ManagerClient): void {
   server.registerTool(
-    "open_manifester_manager",
+    "open_manifester_dashboard",
     {
-      description: "Open the standalone Manifester dashboard for monitoring, starting, stopping, restarting, inspecting, and opening local applications outside Codex.",
+      description: "Open the standalone Manifester Dashboard for monitoring, starting, stopping, restarting, inspecting, and opening local applications outside Codex.",
       inputSchema: {},
     },
     async () => toolResult(await manager.dashboard()),
@@ -20,7 +20,7 @@ export function registerApplicationTools(server: McpServer, applications: Applic
   server.registerTool(
     "open_manifester_application",
     {
-      description: "Discover this project, build or reopen its local application, start it, and immediately open the returned application and manager addresses in separate Codex in-app browser tabs.",
+      description: "Discover this project, build or reopen its local application, start it, and immediately open the returned application and Dashboard addresses in separate Codex in-app browser tabs.",
       inputSchema: {
         ...projectInput,
         port: portInput,
@@ -28,7 +28,7 @@ export function registerApplicationTools(server: McpServer, applications: Applic
     },
     async ({ project, port }) => {
       const application = await applications.open(project, port);
-      return toolResult({ ...application, manager: await manager.dashboard() });
+      return toolResult({ ...application, dashboard: await manager.dashboard() });
     },
   );
 
@@ -47,7 +47,7 @@ export function registerApplicationTools(server: McpServer, applications: Applic
   server.registerTool(
     "get_manifester_status",
     {
-      description: "Inspect the manager-owned application server and report its status, address, port, current generation stage, or anything needing attention.",
+      description: "Inspect the local application server and report its status, address, port, current generation stage, or anything needing attention.",
       inputSchema: projectInput,
     },
     async ({ project }) => toolResult(await applications.status(project)),
@@ -56,7 +56,7 @@ export function registerApplicationTools(server: McpServer, applications: Applic
   server.registerTool(
     "restart_manifester_application",
     {
-      description: "Restart the manager-owned application server, keep its generated files and data, and immediately open the returned openInBrowser address in Codex's in-app browser.",
+      description: "Restart the local application server, keep its generated files and data, and immediately open the returned openInBrowser address in Codex's in-app browser.",
       inputSchema: { ...projectInput, port: portInput },
     },
     async ({ project, port }) => toolResult(await applications.restart(project, port)),

@@ -20,7 +20,6 @@ export async function materialiseRoute(
     project,
     catalog,
     discovery,
-    threadId: state.builderThreadId,
     path: request.path,
     onActivity: (message) => report(project, message),
   });

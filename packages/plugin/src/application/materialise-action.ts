@@ -22,7 +22,6 @@ export async function materialiseAction(
     project,
     catalog,
     discovery,
-    threadId: state.builderThreadId,
     action,
     path: request.path,
     context: request.context,

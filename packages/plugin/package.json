@@ -11,10 +11,14 @@
     "./runner-contract": {
       "types": "./src/runtime/generated-api-contract.ts",
       "import": "./dist/runner-contract.mjs"
+    },
+    "./local-address": {
+      "types": "./src/runtime/local-address.ts",
+      "import": "./dist/local-address.mjs"
     }
   },
   "scripts": {
-    "build": "vite build --mode library && vite build --mode runner-contract",
+    "build": "vite build --mode library && vite build --mode runner-contract && vite build --mode local-address",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
@@ -23,9 +27,11 @@
     "acorn-walk": "8.3.5",
     "csv-parse": "7.0.1",
     "fastify": "5.10.0",
+    "mammoth": "1.12.0",
     "parse5": "8.0.1",
     "postcss": "8.5.14",
     "read-excel-file": "9.3.3",
+    "unpdf": "1.6.2",
     "zod": "4.4.3"
   },
   "devDependencies": {

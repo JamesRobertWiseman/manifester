@@ -49,7 +49,7 @@ export class ManagerClient implements RuntimeManager {
   async forget(project: string): Promise<RemoveResult> {
     const result = await this.#post("/api/projects/forget", { project });
     if (!result || typeof result !== "object" || !("removed" in result) || typeof result.removed !== "boolean") {
-      throw new Error("The Manifester manager returned an invalid response.");
+      throw new Error("The Manifester Dashboard returned an invalid response.");
     }
     return { removed: result.removed };
   }
@@ -79,7 +79,7 @@ export class ManagerClient implements RuntimeManager {
     if (!response.ok) {
       const message = result && typeof result === "object" && "message" in result && typeof result.message === "string"
         ? result.message
-        : "The Manifester manager could not complete this action.";
+        : "The Manifester Dashboard could not complete this action.";
       throw new Error(message);
     }
     return result;
@@ -91,7 +91,7 @@ export class ManagerClient implements RuntimeManager {
 
   async #snapshot(path: string, body: Record<string, unknown>, timeout?: number): Promise<ApplicationSnapshot> {
     const result = await this.#post(path, body, timeout);
-    if (!isApplicationSnapshot(result)) throw new Error("The Manifester manager returned an invalid response.");
+    if (!isApplicationSnapshot(result)) throw new Error("The Manifester Dashboard returned an invalid response.");
     return result;
   }
 

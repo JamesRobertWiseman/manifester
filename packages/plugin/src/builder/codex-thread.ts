@@ -16,11 +16,6 @@ function options(workingDirectory: string): ThreadOptions {
   };
 }
 
-function missingThread(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error);
-  return /thread|session/i.test(message) && /missing|not found|unknown|resume/i.test(message);
-}
-
 async function run(thread: Thread, prompt: string): Promise<boolean> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), BUILD_TIMEOUT_MS);
@@ -44,25 +39,14 @@ async function run(thread: Thread, prompt: string): Promise<boolean> {
 }
 
 export class BuilderThread {
-  #thread: Thread;
-  readonly #workingDirectory: string;
+  readonly #thread: Thread;
 
-  constructor(workingDirectory: string, threadId?: string) {
-    this.#workingDirectory = workingDirectory;
-    const client = createCodexClient();
-    this.#thread = threadId
-      ? client.resumeThread(threadId, options(workingDirectory))
-      : client.startThread(options(workingDirectory));
+  constructor(workingDirectory: string) {
+    this.#thread = createCodexClient().startThread(options(workingDirectory));
   }
 
-  async run(prompt: string, retryMissing = true): Promise<boolean> {
-    try {
-      return await run(this.#thread, prompt);
-    } catch (error) {
-      if (!retryMissing || !missingThread(error)) throw error;
-      this.#thread = createCodexClient().startThread(options(this.#workingDirectory));
-      return run(this.#thread, prompt);
-    }
+  run(prompt: string): Promise<boolean> {
+    return run(this.#thread, prompt);
   }
 
   id(): string {

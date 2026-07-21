@@ -16,10 +16,10 @@ export function Dashboard(): React.ReactElement {
   return (
     <>
       <header className="topbar">
-        <a className="brand" href="/" aria-label="Manifester Manager">
+        <a className="brand" href="/" aria-label="Manifester Dashboard">
           <span className="brand-crop"><img src={bannerUrl} alt="Manifester" /></span>
         </a>
-        <span className="manager-status"><span className="status-dot" />Manager online</span>
+        <span className="manager-status"><span className="status-dot" />Dashboard online</span>
       </header>
       <main className="shell">
         <section className="workspace" aria-labelledby="page-title">

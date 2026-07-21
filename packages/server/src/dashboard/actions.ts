@@ -18,9 +18,9 @@ export const actionMetadata = {
   stop: { label: "Stop", danger: true, result: "stopped" },
   restart: { label: "Restart", result: "restarted" },
   remove: {
-    label: "Remove from manager",
-    result: "removed from manager",
-    confirmation: (name: string) => `Remove ${name} from the manager? Its generated app and SQLite data will be kept.`,
+    label: "Remove from Dashboard",
+    result: "removed from Dashboard",
+    confirmation: (name: string) => `Remove ${name} from the Dashboard? Its generated app and SQLite data will be kept.`,
   },
   delete: {
     label: "Delete app and data",

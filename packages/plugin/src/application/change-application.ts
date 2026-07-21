@@ -16,7 +16,6 @@ export async function changeApplication(
     project,
     catalog,
     discovery,
-    threadId: state.builderThreadId,
     instruction,
     onActivity: (message) => report(project, message),
   });

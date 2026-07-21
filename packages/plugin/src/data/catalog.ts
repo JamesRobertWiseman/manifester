@@ -3,6 +3,7 @@ import { readFile, realpath } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { DataField, DataResource, ProjectCatalog, ProjectFile } from "../contracts.ts";
 import { isPathInside } from "../path.ts";
+import { loadDocument } from "./documents.ts";
 import { fieldId, resourceId } from "./ids.ts";
 import { contentFingerprint, inventoryProject } from "./inventory.ts";
 import type { JsonValue } from "./json.ts";
@@ -58,7 +59,8 @@ function uniqueSamples(values: unknown[]): unknown[] {
   for (const value of values) {
     if (value === null || value === undefined || value === "") continue;
     const key = JSON.stringify(value);
-    if (!samples.has(key)) samples.set(key, value);
+    const sample = typeof value === "string" && value.length > 1_000 ? `${value.slice(0, 1_000)}...` : value;
+    if (!samples.has(key)) samples.set(key, sample);
     if (samples.size === 8) break;
   }
   return [...samples.values()];
@@ -78,6 +80,7 @@ function profileResource(raw: RawResource): DataResource {
   });
   return {
     id,
+    kind: raw.kind,
     name: raw.name,
     sourcePath: raw.sourcePath,
     tableName: raw.tableName,
@@ -93,13 +96,22 @@ async function checkedContents(project: string, file: ProjectFile): Promise<Buff
   return contents;
 }
 
+function isResourceFile(file: ProjectFile): boolean {
+  return file.kind === "dataset" || file.kind === "document";
+}
+
+function loadResources(file: ProjectFile, contents: Buffer): Promise<RawResource[]> {
+  return file.kind === "document" ? loadDocument(file.path, contents) : loadDataset(file.path, contents);
+}
+
 async function loadRawResources(project: string, catalog: ProjectCatalog): Promise<RawResource[]> {
   const root = await realpath(project);
   if (root !== resolve(catalog.project)) throw new Error("The catalog belongs to a different project.");
   const resources: RawResource[] = [];
 
-  for (const file of catalog.files.filter((candidate) => candidate.kind === "dataset")) {
-    resources.push(...await loadDataset(file.path, await checkedContents(root, file)));
+  for (const file of catalog.files.filter(isResourceFile)) {
+    const contents = await checkedContents(root, file);
+    resources.push(...await loadResources(file, contents));
   }
   return resources;
 }
@@ -109,14 +121,14 @@ export async function inspectProject(project: string): Promise<ProjectCatalog> {
   const files = inventory.files.map((file) => ({ ...file }));
   const resources: DataResource[] = [];
 
-  for (const file of files.filter((candidate) => candidate.kind === "dataset")) {
+  for (const file of files.filter(isResourceFile)) {
     try {
       const contents = await checkedContents(inventory.project, file);
-      resources.push(...(await loadDataset(file.path, contents)).map(profileResource));
+      resources.push(...(await loadResources(file, contents)).map(profileResource));
     } catch (error) {
       if (error instanceof Error && error.message.startsWith("The source file changed during discovery:")) throw error;
       file.kind = "unsupported";
-      file.note = "This data file could not be read.";
+      file.note = "This file could not be read.";
     }
   }
 

@@ -1,3 +1,5 @@
+import { MANAGER_ADDRESS } from "./local-address.ts";
+
 export const bridgeCss = `
 #manifester-generation {
   position: fixed !important;
@@ -80,7 +82,7 @@ export const bridgeJavaScript = String.raw`
     const message = document.createElement("p");
     message.textContent = "Generating view...";
     const manager = document.createElement("a");
-    manager.href = "http://127.0.0.1:4316";
+    manager.href = "${MANAGER_ADDRESS}";
     manager.target = "_blank";
     manager.rel = "noopener";
     manager.textContent = "View progress in Manifester";

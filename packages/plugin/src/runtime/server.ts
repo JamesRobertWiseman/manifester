@@ -6,6 +6,7 @@ import type { LocalDataApi } from "../data/types.ts";
 import { assertPathInside } from "../path.ts";
 import { registerApplicationRoutes } from "./application-routes.ts";
 import { registerGeneratedApiRoutes } from "./generated-api-route.ts";
+import { LOCAL_HOST, MANAGER_ADDRESS, localAddress } from "./local-address.ts";
 import { validateGeneratedApp } from "./validate.ts";
 
 interface RuntimeOptions {
@@ -33,14 +34,14 @@ export async function createGeneratedRuntime(options: RuntimeOptions) {
   );
   const server = Fastify({ logger: false, bodyLimit: 1_048_576 });
   server.addHook("onSend", async (_request, reply) => {
-    reply.header("content-security-policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; navigate-to 'self' http://127.0.0.1:4316");
+    reply.header("content-security-policy", `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; navigate-to 'self' ${MANAGER_ADDRESS}`);
     reply.header("x-content-type-options", "nosniff");
   });
   server.setErrorHandler((_error, _request, reply) =>
     reply.code(500).send({ message: "This option could not be opened." }));
   registerGeneratedApiRoutes(server, appRoot, options.data);
   registerApplicationRoutes(server, { appRoot, data: options.data, materialise: options.materialise });
-  await server.listen({ host: "127.0.0.1", port: options.port });
+  await server.listen({ host: LOCAL_HOST, port: options.port });
   const address = server.server.address();
   if (!address || typeof address === "string") {
     await server.close();
@@ -48,7 +49,7 @@ export async function createGeneratedRuntime(options: RuntimeOptions) {
   }
   return {
     server,
-    address: `http://127.0.0.1:${address.port}`,
+    address: localAddress(address.port),
     port: address.port,
   };
 }

@@ -17,7 +17,7 @@ server.setValidatorCompiler(validatorCompiler);
 server.setSerializerCompiler(serializerCompiler);
 server.addHook("onRequest", async (request, reply) => {
   if (request.method === "POST" && request.headers.origin && request.headers.origin !== MANAGER_ADDRESS) {
-    await reply.code(403).send({ message: "This request did not come from the Manifester manager." });
+    await reply.code(403).send({ message: "This request did not come from the Manifester Dashboard." });
   }
 });
 server.addHook("onSend", async (_request, reply) => {
@@ -34,7 +34,7 @@ registerErrorHandler(server);
 registerRoutes(server, { codexOwned, manager, shutdown });
 await registerDashboard(server);
 await server.listen({ host: MANAGER_HOST, port: MANAGER_PORT });
-console.log(`Manifester manager running at ${MANAGER_ADDRESS}`);
+console.log(`Manifester Dashboard running at ${MANAGER_ADDRESS}`);
 void manager.restore();
 
 if (codexOwned) {

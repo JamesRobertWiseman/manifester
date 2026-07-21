@@ -41,7 +41,7 @@ function csvResource(sourcePath: string, contents: Buffer): RawResource {
     fields.map((field, index) => [field, row[index] ?? null]),
   ) as JsonObject);
   const name = basename(sourcePath, extname(sourcePath));
-  return { sourcePath, name, tableName: name, fieldNames: fields, rows };
+  return { sourcePath, kind: "dataset", name, tableName: name, fieldNames: fields, rows };
 }
 
 function jsonResources(sourcePath: string, contents: Buffer): RawResource[] {
@@ -49,7 +49,7 @@ function jsonResources(sourcePath: string, contents: Buffer): RawResource[] {
   const fallbackName = basename(sourcePath, extname(sourcePath));
   const resource = (name: string, values: unknown[]): RawResource => {
     const rows = values.map(objectRow);
-    return { sourcePath, name, tableName: name, fieldNames: fieldNames(rows), rows };
+    return { sourcePath, kind: "dataset", name, tableName: name, fieldNames: fieldNames(rows), rows };
   };
 
   if (Array.isArray(parsed)) return [resource(fallbackName, parsed)];
@@ -76,6 +76,7 @@ async function spreadsheetResources(sourcePath: string, contents: Buffer): Promi
     });
     return {
       sourcePath,
+      kind: "dataset" as const,
       name: sheet,
       tableName: sheet,
       fieldNames: fields,

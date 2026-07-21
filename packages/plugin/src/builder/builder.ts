@@ -25,7 +25,6 @@ import { createStagingApp, discardStagingApp, publishStagingApp } from "./stagin
 interface StagingBuildOptions {
   project: string;
   catalog: ProjectCatalog;
-  threadId?: string;
   prompt(): string;
   validateRegistry?(registry: AppRegistry, previous?: AppRegistry): void;
   acceptValidOnTimeout?: boolean;
@@ -47,9 +46,9 @@ async function buildInStaging(options: StagingBuildOptions): Promise<BuildResult
   const previousSources = options.preserveExistingRoutes && previousRegistry
     ? await readRouteSources(staging, previousRegistry)
     : undefined;
-  const thread = new BuilderThread(staging, options.threadId);
+  const thread = new BuilderThread(staging);
   try {
-    const completed = await thread.run(options.prompt(), Boolean(options.threadId));
+    const completed = await thread.run(options.prompt());
     if (!completed && !options.acceptValidOnTimeout) throw new Error("Application generation took too long.");
     const validate = async () => {
       const registry = await validateGeneratedApp(
@@ -122,7 +121,6 @@ export function materialiseApplicationAction(options: {
   project: string;
   catalog: ProjectCatalog;
   discovery: DiscoveryResult;
-  threadId: string;
   action: AppAction;
   path: string;
   context: Record<string, string | number | boolean | null>;
@@ -131,7 +129,6 @@ export function materialiseApplicationAction(options: {
   return buildInStaging({
     project: options.project,
     catalog: options.catalog,
-    threadId: options.threadId,
     prompt: () => materialisePrompt(options),
     acceptValidOnTimeout: true,
     preserveExistingRoutes: true,
@@ -150,14 +147,12 @@ export function materialiseApplicationRoute(options: {
   project: string;
   catalog: ProjectCatalog;
   discovery: DiscoveryResult;
-  threadId: string;
   path: string;
   onActivity?: (message: string) => void;
 }): Promise<BuildResult> {
   return buildInStaging({
     project: options.project,
     catalog: options.catalog,
-    threadId: options.threadId,
     prompt: () => materialiseRoutePrompt(options),
     acceptValidOnTimeout: true,
     reviewPrompt: (validationIssue) => materialiseRouteReviewPrompt({
@@ -174,14 +169,12 @@ export function changeGeneratedApplication(options: {
   project: string;
   catalog: ProjectCatalog;
   discovery: DiscoveryResult;
-  threadId: string;
   instruction: string;
   onActivity?: (message: string) => void;
 }): Promise<BuildResult> {
   return buildInStaging({
     project: options.project,
     catalog: options.catalog,
-    threadId: options.threadId,
     prompt: () => changePrompt(options),
     reviewPrompt: (validationIssue) => changeReviewPrompt({
       instruction: options.instruction,

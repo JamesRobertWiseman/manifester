@@ -23,7 +23,7 @@ export function registerErrorHandler(server: FastifyInstance): void {
         ? validationMessage
         : error instanceof Error
           ? error.message
-          : "The manager could not complete this action.",
+          : "The Dashboard could not complete this action.",
     });
   });
 }
