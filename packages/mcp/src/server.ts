@@ -2,10 +2,13 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { ApplicationService } from "@manifester/plugin";
 import { CodexManagerLifecycle, ManagerClient } from "@manifester/server";
+import { homedir } from "node:os";
 import packageMetadata from "../package.json" with { type: "json" };
 import { installGlobalCli } from "./cli-installer.ts";
 import { discoveryQuestions } from "./discovery-questions.ts";
 import { registerApplicationTools } from "./tools/application-tools.ts";
+
+process.chdir(homedir());
 
 const server = new McpServer({ name: "manifester", version: packageMetadata.version });
 await installGlobalCli().catch((error) => {

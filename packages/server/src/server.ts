@@ -1,11 +1,14 @@
 import Fastify from "fastify";
 import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
+import { homedir } from "node:os";
 import { MANAGER_ADDRESS, MANAGER_HOST, MANAGER_PORT } from "./contracts.ts";
 import { registerErrorHandler } from "./http/errors.ts";
 import { registerRoutes } from "./http/routes.ts";
 import { registerDashboard } from "./http/static.ts";
 import { liveCodexOwners } from "./lifecycle.ts";
 import { ManagerService } from "./manager-service.ts";
+
+process.chdir(homedir());
 
 const manager = new ManagerService();
 const server = Fastify({ logger: false, bodyLimit: 65_536 });
