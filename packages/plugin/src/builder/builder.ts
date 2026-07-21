@@ -45,7 +45,7 @@ async function buildInStaging(options: StagingBuildOptions): Promise<BuildResult
   const previousSources = options.preserveExistingRoutes && previousRegistry
     ? await readRouteSources(staging, previousRegistry)
     : undefined;
-  const thread = new BuilderThread(staging);
+  const thread = new BuilderThread(staging, options.onActivity);
   try {
     await thread.run(options.prompt());
     const validate = async () => {
