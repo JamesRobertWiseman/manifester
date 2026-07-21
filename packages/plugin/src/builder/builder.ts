@@ -27,7 +27,6 @@ interface StagingBuildOptions {
   catalog: ProjectCatalog;
   prompt(): string;
   validateRegistry?(registry: AppRegistry, previous?: AppRegistry): void;
-  acceptValidOnTimeout?: boolean;
   copyLive?: boolean;
   preserveExistingRoutes?: boolean;
   reviewPrompt?(validationIssue?: string): string;
@@ -48,8 +47,7 @@ async function buildInStaging(options: StagingBuildOptions): Promise<BuildResult
     : undefined;
   const thread = new BuilderThread(staging);
   try {
-    const completed = await thread.run(options.prompt());
-    if (!completed && !options.acceptValidOnTimeout) throw new Error("Application generation took too long.");
+    await thread.run(options.prompt());
     const validate = async () => {
       const registry = await validateGeneratedApp(
         staging,
@@ -75,14 +73,11 @@ async function buildInStaging(options: StagingBuildOptions): Promise<BuildResult
       }
       if (validationIssue) {
         options.onActivity?.("Repairing generated application");
-        if (!await thread.run(options.reviewPrompt(validationIssue))) {
-          throw new Error("Application repair took too long.");
-        }
+        await thread.run(options.reviewPrompt(validationIssue));
         await validate();
-      }
-      options.onActivity?.(options.reviewLabel ?? "Reviewing generated view");
-      if (!await thread.run(options.reviewPrompt())) {
-        throw new Error("Application review took too long.");
+      } else {
+        options.onActivity?.(options.reviewLabel ?? "Reviewing generated view");
+        await thread.run(options.reviewPrompt());
       }
     }
     const registry = await validate();
@@ -108,7 +103,6 @@ export function buildInitialApplication(options: {
     project: options.project,
     catalog: options.catalog,
     prompt: () => initialBuildPrompt(options.catalog, options.discovery),
-    acceptValidOnTimeout: true,
     copyLive: false,
     reviewPrompt: initialReviewPrompt,
     reviewLabel: "Reviewing generated application",
@@ -130,7 +124,6 @@ export function materialiseApplicationAction(options: {
     project: options.project,
     catalog: options.catalog,
     prompt: () => materialisePrompt(options),
-    acceptValidOnTimeout: true,
     preserveExistingRoutes: true,
     reviewPrompt: (validationIssue) => materialiseReviewPrompt({
       action: options.action,
@@ -154,7 +147,6 @@ export function materialiseApplicationRoute(options: {
     project: options.project,
     catalog: options.catalog,
     prompt: () => materialiseRoutePrompt(options),
-    acceptValidOnTimeout: true,
     reviewPrompt: (validationIssue) => materialiseRouteReviewPrompt({
       path: options.path,
       ...(validationIssue ? { validationIssue } : {}),

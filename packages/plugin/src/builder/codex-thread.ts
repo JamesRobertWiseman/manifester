@@ -16,12 +16,11 @@ function options(workingDirectory: string): ThreadOptions {
   };
 }
 
-async function run(thread: Thread, prompt: string): Promise<boolean> {
+async function run(thread: Thread, prompt: string): Promise<void> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), BUILD_TIMEOUT_MS);
   try {
     await thread.run(prompt, { signal: controller.signal });
-    return true;
   } catch (error) {
     const aborted = controller.signal.aborted && (
       error === controller.signal.reason
@@ -31,7 +30,7 @@ async function run(thread: Thread, prompt: string): Promise<boolean> {
         || /Codex Exec exited with signal SIG(?:TERM|KILL)/i.test(error.message)
       )
     );
-    if (aborted) return false;
+    if (aborted) return;
     throw error;
   } finally {
     clearTimeout(timeout);
@@ -45,7 +44,7 @@ export class BuilderThread {
     this.#thread = createCodexClient().startThread(options(workingDirectory));
   }
 
-  run(prompt: string): Promise<boolean> {
+  run(prompt: string): Promise<void> {
     return run(this.#thread, prompt);
   }
 
