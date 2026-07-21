@@ -1,0 +1,29 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": ["scripts/*.mjs", "vite.node.ts"],
+      "project": ["scripts/*.mjs", "*.ts"]
+    },
+    "packages/plugin": {
+      "project": ["src/**/*.ts!"]
+    },
+    "packages/api-runner": {
+      "entry": ["src/api-runner.ts!"],
+      "project": ["src/**/*.ts!"]
+    },
+    "packages/server": {
+      "entry": ["src/server.ts!", "src/dashboard/main.tsx!"],
+      "project": ["src/**/*.{ts,tsx}!"]
+    },
+    "packages/cli": {
+      "entry": ["src/cli.ts!"],
+      "project": ["src/**/*.ts!"]
+    },
+    "packages/mcp": {
+      "entry": ["src/server.ts!"],
+      "project": ["src/**/*.ts!"]
+    }
+  },
+  "treatConfigHintsAsErrors": true
+}

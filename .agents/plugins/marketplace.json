@@ -1,0 +1,20 @@
+{
+  "name": "manifester-local",
+  "interface": {
+    "displayName": "Manifester Local"
+  },
+  "plugins": [
+    {
+      "name": "manifester",
+      "source": {
+        "source": "local",
+        "path": "."
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "manifester",
+  "version": "0.4.1",
+  "description": "Generate a useful local application for the files and data in a project.",
+  "author": {
+    "name": "Manifester"
+  },
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Manifester",
+    "shortDescription": "Build a useful local application for your project",
+    "longDescription": "Discover what a project's files and data mean, generate a custom local application, and add deeper features when they are first used.",
+    "developerName": "Manifester",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Create the most useful application for the data in this project"
+    ],
+    "screenshots": [],
+    "brandColor": "#2563EB"
+  }
+}

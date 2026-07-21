@@ -1,0 +1,40 @@
+{
+  "name": "manifester",
+  "version": "0.4.1",
+  "private": true,
+  "type": "module",
+  "files": [
+    ".agents/plugins/marketplace.json",
+    ".codex-plugin/plugin.json",
+    ".mcp.json",
+    "assets/",
+    "DEMO.md",
+    "dist/",
+    "examples/task-management/tasks.csv",
+    "examples/underwriting-system/applications.json",
+    "README.md",
+    "skills/"
+  ],
+  "bin": {
+    "mnf": "dist/cli/cli.mjs"
+  },
+  "packageManager": "pnpm@11.13.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "build": "node scripts/clean-build.mjs && pnpm -r --workspace-concurrency=1 run build && node scripts/clean-intermediates.mjs && node scripts/make-cli-executable.mjs",
+    "clean:install": "pnpm install && pnpm verify",
+    "deadcode": "knip && knip --strict",
+    "package:plugin": "pnpm verify && pnpm pack --pack-destination dist",
+    "start": "node dist/mcp/server.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json && pnpm -r --workspace-concurrency=1 run typecheck",
+    "verify": "pnpm typecheck && pnpm deadcode && pnpm build"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.1",
+    "knip": "6.25.0",
+    "typescript": "7.0.2",
+    "vite": "8.1.5"
+  }
+}

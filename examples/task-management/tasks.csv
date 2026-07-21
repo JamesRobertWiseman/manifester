@@ -1,0 +1,7 @@
+id,title,priority,status,due_date,owner
+T-001,Prepare briefing,High,In progress,2026-07-18,Alex
+T-002,Review evidence,Medium,Ready,2026-07-19,Morgan
+T-003,Resolve open question,High,Blocked,2026-07-17,Alex
+T-004,Publish summary,Low,Planned,2026-07-22,Sam
+T-005,Archive source notes,Low,Done,2026-07-15,Morgan
+

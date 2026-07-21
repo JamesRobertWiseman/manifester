@@ -1,0 +1,21 @@
+{
+  "name": "@manifester/mcp",
+  "version": "0.4.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@manifester/server": "workspace:*",
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "@manifester/plugin": "workspace:*",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.1",
+    "typescript": "7.0.2",
+    "vite": "8.1.5"
+  }
+}

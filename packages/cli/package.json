@@ -1,0 +1,20 @@
+{
+  "name": "@manifester/cli",
+  "version": "0.4.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@manifester/server": "workspace:*",
+    "commander": "15.0.0",
+    "open": "11.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.1",
+    "typescript": "7.0.2",
+    "vite": "8.1.5"
+  }
+}
